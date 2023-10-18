@@ -29,7 +29,10 @@ class ElementFragment() : BaseFragment<FragmentElementBinding>(FragmentElementBi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        elem = arguments?.getParcelable(ARG_PARAM1)
+        elem = arguments?.getParcelable<Element>(ARG_PARAM1).apply {
+            this?.let {  cache?.putElements(it)}
+        }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,11 +41,5 @@ class ElementFragment() : BaseFragment<FragmentElementBinding>(FragmentElementBi
         binding.tvName.text = elem?.name
         binding.tvDesc.text = elem?.description
     }
-
-    override fun onStop() {
-        super.onStop()
-        cache?.putElements(elem!!)
-    }
-
 
 }
