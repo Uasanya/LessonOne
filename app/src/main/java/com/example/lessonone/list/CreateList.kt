@@ -6,16 +6,13 @@ class CreateList {
 
     companion object {
         fun create(): List<Element> {
-            val elements: MutableList<Element> = mutableListOf()
-            for (i in 0..19) {
-                elements.add(
-                    Element(
-                    id = i,
-                    name = "name $i",
-                    description = "description $i"
-                ))
+            return List(20) {
+                Element(
+                    id = it,
+                    name = "name $it",
+                    description = "description $it"
+                )
             }
-            return elements
         }
     }
 }
