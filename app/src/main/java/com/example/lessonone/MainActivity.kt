@@ -1,31 +1,34 @@
 package com.example.lessonone
 
 import android.Manifest
-import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.example.lessonone.service.Broadcast
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import com.example.lessonone.element.ElementFragment
+import com.example.lessonone.list.ElementList
+import com.example.lessonone.service.Constant
 import com.example.lessonone.service.ForegroundService
 
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         intent?.extras?.let { bundle ->
-            if (bundle.containsKey("MESSAGE")){
-                Toast.makeText(applicationContext, bundle.getString("MESSAGE"), Toast.LENGTH_SHORT).show()
-                return
+            if (bundle.containsKey(Constant.KEY_ID)) {
+                val id = intent.getIntExtra(Constant.KEY_ID, -1)
+                if (id >= 0) {
+                    val elem = ElementList.getElementById(id)
+                    navigate(ElementFragment.newInstance(elem))
+                }
             }
         }
-
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             ActivityCompat.requestPermissions(
                 this,
@@ -42,6 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    val br: BroadcastReceiver = Broadcast()
+    fun navigate(fragment: Fragment) {
+        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+        ft.replace(R.id.container, fragment, fragment.tag).addToBackStack(null).commit()
+    }
 }

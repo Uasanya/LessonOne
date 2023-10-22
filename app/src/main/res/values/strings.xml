@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">LessonOne</string>
-    <string name="app_name">LessonOne</string>
+    <string name="channel_name">Foreground Service Channel</string>
+    <string name="content_title">Foreground Service</string>
+    <string name="content_text">TEST</string>
+    <string name="notific_text">"Hello world"</string>
+
 
 </resources>

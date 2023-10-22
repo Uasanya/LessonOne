@@ -18,9 +18,9 @@
         <service android:name=".service.ForegroundService"/>
 
 
-        <receiver android:name=".service.Broadcast" android:exported="true">
+        <receiver android:name=".service.MyBroadcastReceiver" android:exported="true">
             <intent-filter>
-                <action android:name="APP_SPECIFIC_BROADCAST" />
+                <action android:name="ID_ACTION" />
             </intent-filter>
         </receiver>
         <activity

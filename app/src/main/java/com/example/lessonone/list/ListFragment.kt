@@ -7,17 +7,16 @@ import com.example.lessonone.databinding.FragmentListBinding
 import com.example.lessonone.element.Element
 import com.example.lessonone.element.ElementFragment
 
-
 class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::inflate),
     ElementListener {
 
-    private val listAdapter: ListAdapter = ListAdapter(this)
-
+    private var listAdapter: ElementListAdapter? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val elems = CreateList.create()
-        listAdapter.setElements(elems)
+        listAdapter = ElementListAdapter {
+            navigateToElement(it)
+        }.apply { submitList(ElementList.list) }
         binding.rv.adapter = listAdapter
     }
 
