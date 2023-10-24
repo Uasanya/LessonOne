@@ -27,7 +27,7 @@ class ElementListAdapter(private val onItemCLicked: (element: Element) -> Unit) 
         }
 
         override fun areContentsTheSame(oldItem: Element, newItem: Element): Boolean {
-            TODO("Not yet implemented")
+            return oldItem == newItem
         }
     }
 }

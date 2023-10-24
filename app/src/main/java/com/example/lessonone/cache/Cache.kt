@@ -1,26 +1,23 @@
 package com.example.lessonone.cache
 
-import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
-class Cache(context: Context) {
+class Cache(private val preferences: SharedPreferences) {
 
-    companion object {
-        private const val PREF: String = "PREF_FILE"
-        private const val PREF_KEY_ID = "PREF_KEY_ID"
-    }
-
-    private val preferences: SharedPreferences =
-        context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
-    private val editor: SharedPreferences.Editor = preferences.edit()
 
     fun putId(id: Int) {
-        editor.putInt(PREF_KEY_ID, id)
-        editor.apply()
+        preferences.edit {
+            putInt(PREF_KEY_ID, id)
+        }
     }
 
     fun getId(): Int {
-        return preferences.getInt(PREF_KEY_ID,-1)
+        return preferences.getInt(PREF_KEY_ID, -1)
+    }
+
+    companion object {
+        private const val PREF_KEY_ID = "PREF_KEY_ID"
     }
 }
 
