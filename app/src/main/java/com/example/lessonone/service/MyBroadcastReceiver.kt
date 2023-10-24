@@ -11,7 +11,7 @@ class MyBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val preferences: SharedPreferences =
-            context.getSharedPreferences(PREF, Context.MODE_PRIVATE)
+            context.getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         if (intent.action == Constant.ID_ACTION) {
             val cache = Cache(preferences)
             val id = cache.getId()
@@ -21,9 +21,5 @@ class MyBroadcastReceiver : BroadcastReceiver() {
             }
             context.startActivity(idIntent)
         }
-    }
-
-    companion object {
-        private const val PREF: String = "PREF_FILE"
     }
 }

@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import com.example.lessonone.base.BaseFragment
 import com.example.lessonone.cache.Cache
 import com.example.lessonone.databinding.FragmentElementBinding
+import com.example.lessonone.list.ElementList
+import com.example.lessonone.service.Constant
 
 
 class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBinding::inflate) {
@@ -16,12 +18,13 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val preferences: SharedPreferences =
-            requireContext().getSharedPreferences(PREF, Context.MODE_PRIVATE)
+        val preferences:SharedPreferences =
+            requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         val cache = Cache(preferences)
-        elem = arguments?.getParcelable<Element>(ARG_PARAM1).apply {
-            this?.let { cache.putId(it.id) }
-        }
+        val id = arguments?.getInt(ARG_PARAM1).apply {
+            this?.let { cache.putId(it) }
+        }?: return
+        elem = ElementList.getElementById(id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,12 +36,11 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
 
     companion object {
         private const val ARG_PARAM1: String = "key"
-        private const val PREF: String = "PREF_FILE"
 
-        fun newInstance(element: Element): Fragment {
+        fun newInstance(id:Int): Fragment {
             val elementFragment = ElementFragment()
             val args = Bundle()
-            args.putParcelable(ARG_PARAM1, element)
+            args.putInt(ARG_PARAM1, id)
             elementFragment.arguments = args
             return elementFragment
         }

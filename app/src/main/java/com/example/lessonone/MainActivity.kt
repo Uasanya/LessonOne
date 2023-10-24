@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
             if (bundle.containsKey(Constant.KEY_ID)) {
                 val id = intent.getIntExtra(Constant.KEY_ID, -1)
                 if (id >= 0) {
-                    val elem = ElementList.getElementById(id)
-                    navigate(ElementFragment.newInstance(elem))
+                    //val elem = ElementList.getElementById(id)
+                    navigate(ElementFragment.newInstance(id))
                 }
             }
         }

@@ -8,14 +8,14 @@ import com.example.lessonone.element.ElementFragment
 
 class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::inflate) {
 
-    private var listAdapter: ElementListAdapter? = null
+    private val listAdapter: ElementListAdapter by lazy {
+        ElementListAdapter {
+            navigate(ElementFragment.newInstance(it.id))
+        }.apply { submitList(ElementList.list) }
+    }
 
-    // private val listAdapter: ElementListAdapter by lazy { navigate() }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        listAdapter = ElementListAdapter {
-            navigate(ElementFragment.newInstance(it))
-        }.apply { submitList(ElementList.list) }
         binding.rv.adapter = listAdapter
     }
 }
