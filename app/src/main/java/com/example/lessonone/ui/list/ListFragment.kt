@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import com.example.lessonone.data.datasource.ElementDataSource
+import com.example.lessonone.data.datasource.LocalDataSource
+import com.example.lessonone.data.local.Cache
 import com.example.lessonone.data.model.Element
+import com.example.lessonone.data.repository.ElementRepository
 import com.example.lessonone.databinding.FragmentListBinding
 import com.example.lessonone.ui.base.BaseFragment
 import com.example.lessonone.ui.elementinfo.ElementFragment
@@ -20,15 +24,21 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         val preferences: SharedPreferences =
-            requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
-        listPresenter = ListPresenter(preferences, this)
+            context.getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
+        val cache = Cache(preferences)
+        val localDataSource = LocalDataSource(cache)
+        val elementDataSource = ElementDataSource()
+        val repository = ElementRepository(elementDataSource, localDataSource)
+        listPresenter = ListPresenter(repository)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        listPresenter?.onAttach(this)
         listPresenter?.getList()
         binding.rv.adapter = listAdapter
     }
@@ -37,8 +47,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
         listAdapter.submitList(list)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        listPresenter?.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        listPresenter?.onDetached()
     }
 }

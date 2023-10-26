@@ -1,12 +1,10 @@
 package com.example.lessonone.ui.elementinfo
 
-import android.content.SharedPreferences
 import com.example.lessonone.data.repository.ElementRepository
 
-class ElementPresenter(preferences: SharedPreferences, private var elementView: ElementView?) :
-    ElementView {
+class ElementPresenter(private val elementRepository: ElementRepository) {
 
-    private val elementRepository: ElementRepository = ElementRepository(preferences)
+    private var elementView: ElementView? = null
 
     fun getElementById(id: Int) {
         elementView?.showElement(elementRepository.getDataSourceList()[id])
@@ -14,9 +12,11 @@ class ElementPresenter(preferences: SharedPreferences, private var elementView: 
 
     fun setCache(id: Int) = elementRepository.setLocalId(id)
 
-    fun getCache(): Int = elementRepository.getLocalId()
+    fun onAttach(elementView: ElementView) {
+        this.elementView = elementView
+    }
 
-    fun onDestroy() {
+    fun onDetach() {
         elementView = null
     }
 }

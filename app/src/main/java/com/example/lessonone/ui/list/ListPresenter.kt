@@ -1,19 +1,20 @@
 package com.example.lessonone.ui.list
 
-import android.content.SharedPreferences
 import com.example.lessonone.data.repository.ElementRepository
 
-class ListPresenter(preferences: SharedPreferences, private var listView: ListView?) {
+class ListPresenter(private val elementRepository: ElementRepository) {
 
-    private val elementRepository: ElementRepository = ElementRepository(preferences)
-
+    private var listView: ListView? = null
 
     fun getList() {
         listView?.showElements(elementRepository.getDataSourceList())
     }
 
-    fun onDestroy() {
-        listView = null
+    fun onAttach(listView: ListView) {
+        this.listView = listView
     }
 
+    fun onDetached() {
+        listView = null
+    }
 }

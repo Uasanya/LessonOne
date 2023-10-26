@@ -5,7 +5,6 @@ import androidx.core.content.edit
 
 class Cache(private val preferences: SharedPreferences) {
 
-
     fun putId(id: Int) {
         preferences.edit {
             putInt(PREF_KEY_ID, id)

@@ -4,5 +4,5 @@ import com.example.lessonone.data.model.Element
 
 interface ElementView {
 
-    fun showElement(element: Element) {}
+    fun showElement(element: Element)
 }
