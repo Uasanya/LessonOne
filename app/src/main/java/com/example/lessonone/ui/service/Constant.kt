@@ -1,4 +1,4 @@
-package com.example.lessonone.service
+package com.example.lessonone.ui.service
 
 object Constant {
 

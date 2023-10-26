@@ -1,4 +1,4 @@
-package com.example.lessonone
+package com.example.lessonone.ui
 
 import android.Manifest
 import android.content.Intent
@@ -8,10 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.example.lessonone.element.ElementFragment
-import com.example.lessonone.list.ElementList
-import com.example.lessonone.service.Constant
-import com.example.lessonone.service.ForegroundService
+import com.example.lessonone.R
+import com.example.lessonone.ui.elementinfo.ElementFragment
+import com.example.lessonone.ui.service.Constant
+import com.example.lessonone.ui.service.ForegroundService
 
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +24,6 @@ class MainActivity : AppCompatActivity() {
             if (bundle.containsKey(Constant.KEY_ID)) {
                 val id = intent.getIntExtra(Constant.KEY_ID, -1)
                 if (id >= 0) {
-                    //val elem = ElementList.getElementById(id)
                     navigate(ElementFragment.newInstance(id))
                 }
             }

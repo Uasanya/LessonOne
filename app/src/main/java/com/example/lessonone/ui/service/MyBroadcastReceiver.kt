@@ -1,20 +1,23 @@
-package com.example.lessonone.service
+package com.example.lessonone.ui.service
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.example.lessonone.MainActivity
-import com.example.lessonone.cache.Cache
+import com.example.lessonone.ui.MainActivity
+import com.example.lessonone.ui.elementinfo.ElementPresenter
+import com.example.lessonone.ui.elementinfo.ElementView
 
-class MyBroadcastReceiver : BroadcastReceiver() {
+class MyBroadcastReceiver : BroadcastReceiver(), ElementView {
+
+    private var elementPresenter: ElementPresenter? = null
 
     override fun onReceive(context: Context, intent: Intent) {
         val preferences: SharedPreferences =
             context.getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
+        elementPresenter = ElementPresenter(preferences, this)
         if (intent.action == Constant.ID_ACTION) {
-            val cache = Cache(preferences)
-            val id = cache.getId()
+            val id = elementPresenter?.getCache()
             val idIntent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 putExtra(Constant.KEY_ID, id)

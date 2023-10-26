@@ -1,12 +1,12 @@
-package com.example.lessonone.list
+package com.example.lessonone.ui.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lessonone.data.model.Element
 import com.example.lessonone.databinding.ItemElementBinding
-import com.example.lessonone.element.Element
 
 class ElementListAdapter(private val onItemCLicked: (element: Element) -> Unit) :
     ListAdapter<Element, ElementViewHolder>(MyItemDiffCallback()) {

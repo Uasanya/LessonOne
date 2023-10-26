@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
+    tools:context=".ui.MainActivity"
     android:id="@+id/container"
-    android:name="com.example.lessonone.list.ListFragment"
+    android:name="com.example.lessonone.ui.list.ListFragment"
     >
 </androidx.fragment.app.FragmentContainerView>

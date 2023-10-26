@@ -1,4 +1,4 @@
-package com.example.lessonone.service
+package com.example.lessonone.ui.service
 
 import android.annotation.SuppressLint
 import android.app.Notification

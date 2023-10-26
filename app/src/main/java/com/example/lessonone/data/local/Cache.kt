@@ -1,4 +1,4 @@
-package com.example.lessonone.cache
+package com.example.lessonone.data.local
 
 import android.content.SharedPreferences
 import androidx.core.content.edit

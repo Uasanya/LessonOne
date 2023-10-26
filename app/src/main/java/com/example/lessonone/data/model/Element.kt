@@ -1,4 +1,4 @@
-package com.example.lessonone.element
+package com.example.lessonone.data.model
 
 data class Element(
     val id: Int,

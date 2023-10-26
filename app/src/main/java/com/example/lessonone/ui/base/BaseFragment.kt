@@ -1,4 +1,4 @@
-package com.example.lessonone.base
+package com.example.lessonone.ui.base
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import com.example.lessonone.MainActivity
+import com.example.lessonone.ui.MainActivity
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val inflate: (inflater: LayoutInflater) -> VB
