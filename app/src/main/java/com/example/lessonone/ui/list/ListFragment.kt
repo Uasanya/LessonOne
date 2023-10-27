@@ -16,15 +16,7 @@ import com.example.lessonone.ui.service.Constant
 
 class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::inflate) {
 
-    private var viewModel: ListViewModel? = null
-    private val listAdapter: ElementListAdapter by lazy {
-        ElementListAdapter {
-            navigate(ElementFragment.newInstance(it.id))
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel: ListViewModel by lazy {
         val preferences: SharedPreferences =
             requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         val cache = Cache(preferences)
@@ -32,13 +24,18 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
         val factory = ListViewModel.provideFactory(repository, this)
-        viewModel = ViewModelProvider(this, factory)[ListViewModel::class.java]
+        ViewModelProvider(this, factory)[ListViewModel::class.java]
+    }
+    private val listAdapter: ElementListAdapter by lazy {
+        ElementListAdapter {
+            navigate(ElementFragment.newInstance(it.id))
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel?.getList()
-        viewModel?.listLiveData?.observe(viewLifecycleOwner) { list ->
+        viewModel.getList()
+        viewModel.listLiveData.observe(viewLifecycleOwner) { list ->
             listAdapter.submitList(list)
         }
         binding.rv.adapter = listAdapter

@@ -17,11 +17,7 @@ import com.example.lessonone.ui.service.Constant
 
 class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBinding::inflate) {
 
-    private var id: Int? = null
-    private var viewModel: ElementViewModel? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    private val viewModel: ElementViewModel by lazy {
         val preferences: SharedPreferences =
             requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         val cache = Cache(preferences)
@@ -29,17 +25,21 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
         val factory = ElementViewModel.provideFactory(repository, this)
-        viewModel = ViewModelProvider(this, factory)[ElementViewModel::class.java]
-        id = arguments?.getInt(ARG_PARAM1).apply {
-            this?.let { viewModel?.setCache(this) }
-        } ?: return
+        ViewModelProvider(this, factory)[ElementViewModel::class.java]
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val id = arguments?.getInt(ARG_PARAM1).apply {
+            this?.let { viewModel.setCache(this) }
+        } ?: return
+        viewModel.getElement(id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel?.getElement(id!!)
-        viewModel?.elementLiveData?.observe(viewLifecycleOwner) { element ->
+        viewModel.elementLiveData.observe(viewLifecycleOwner) { element ->
             binding.tvId.text = element.id.toString()
             binding.tvName.text = element.name
             binding.tvDesc.text = element.description
