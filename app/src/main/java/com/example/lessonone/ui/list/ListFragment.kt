@@ -4,51 +4,43 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.example.lessonone.data.datasource.ElementDataSource
 import com.example.lessonone.data.datasource.LocalDataSource
 import com.example.lessonone.data.local.Cache
-import com.example.lessonone.data.model.Element
 import com.example.lessonone.data.repository.ElementRepository
 import com.example.lessonone.databinding.FragmentListBinding
 import com.example.lessonone.ui.base.BaseFragment
 import com.example.lessonone.ui.elementinfo.ElementFragment
 import com.example.lessonone.ui.service.Constant
 
-class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::inflate), ListView {
+class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::inflate) {
 
-
-    private var listPresenter: ListPresenter? = null
+    private var viewModel: ListViewModel? = null
     private val listAdapter: ElementListAdapter by lazy {
         ElementListAdapter {
             navigate(ElementFragment.newInstance(it.id))
         }
     }
 
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         val preferences: SharedPreferences =
-            context.getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         val cache = Cache(preferences)
         val localDataSource = LocalDataSource(cache)
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
-        listPresenter = ListPresenter(repository)
+        val factory = ListViewModel.provideFactory(repository, this)
+        viewModel = ViewModelProvider(this, factory)[ListViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        listPresenter?.onAttach(this)
-        listPresenter?.getList()
+        viewModel?.getList()
+        viewModel?.listLiveData?.observe(viewLifecycleOwner) { list ->
+            listAdapter.submitList(list)
+        }
         binding.rv.adapter = listAdapter
-    }
-
-    override fun showElements(list: List<Element>) {
-        listAdapter.submitList(list)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        listPresenter?.onDetached()
     }
 }

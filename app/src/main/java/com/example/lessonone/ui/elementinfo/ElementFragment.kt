@@ -5,57 +5,45 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.lessonone.data.datasource.ElementDataSource
 import com.example.lessonone.data.datasource.LocalDataSource
 import com.example.lessonone.data.local.Cache
-import com.example.lessonone.data.model.Element
 import com.example.lessonone.data.repository.ElementRepository
 import com.example.lessonone.databinding.FragmentElementBinding
 import com.example.lessonone.ui.base.BaseFragment
 import com.example.lessonone.ui.service.Constant
 
 
-class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBinding::inflate),
-    ElementView {
+class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBinding::inflate) {
 
-
-    private var elementPresenter: ElementPresenter? = null
     private var id: Int? = null
+    private var viewModel: ElementViewModel? = null
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         val preferences: SharedPreferences =
-            context.getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences(Constant.PREF, Context.MODE_PRIVATE)
         val cache = Cache(preferences)
         val localDataSource = LocalDataSource(cache)
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
-        elementPresenter = ElementPresenter(repository)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+        val factory = ElementViewModel.provideFactory(repository, this)
+        viewModel = ViewModelProvider(this, factory)[ElementViewModel::class.java]
         id = arguments?.getInt(ARG_PARAM1).apply {
-            this?.let { elementPresenter?.setCache(this) }
+            this?.let { viewModel?.setCache(this) }
         } ?: return
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        elementPresenter?.onAttach(this)
-        elementPresenter?.getElementById(id!!)
-    }
-
-    override fun showElement(element: Element) {
-        binding.tvId.text = element.id.toString()
-        binding.tvName.text = element.name
-        binding.tvDesc.text = element.description
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        elementPresenter?.onDetach()
+        viewModel?.getElement(id!!)
+        viewModel?.elementLiveData?.observe(viewLifecycleOwner) { element ->
+            binding.tvId.text = element.id.toString()
+            binding.tvName.text = element.name
+            binding.tvDesc.text = element.description
+        }
     }
 
     companion object {
@@ -69,5 +57,4 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
             return elementFragment
         }
     }
-
 }
