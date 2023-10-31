@@ -34,9 +34,9 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getList()
-        viewModel.listLiveData.observe(viewLifecycleOwner) { list ->
-            listAdapter.submitList(list)
+        viewModel.send(LoadEvent())
+        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
+            listAdapter.submitList(state.list)
         }
         binding.rv.adapter = listAdapter
     }

@@ -7,23 +7,31 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.example.lessonone.data.model.Element
 import com.example.lessonone.data.repository.ElementRepository
 
 class ElementViewModel(private val elementRepository: ElementRepository) : ViewModel() {
 
-    private val _elementLiveData = MutableLiveData<Element>()
-    val elementLiveData: LiveData<Element>
-        get() = _elementLiveData
+
+    private val _stateLiveData = MutableLiveData<ElementState>()
+    val stateLiveData: LiveData<ElementState>
+        get() = _stateLiveData
 
 
-    fun getElement(id: Int) {
+    private fun getElement(id: Int) {
         val element = elementRepository.getDataSourceList()[id]
-        _elementLiveData.value = element
+        _stateLiveData.value = ElementState(element)
     }
 
-    fun setCache(id: Int) {
+    private fun setCache(id: Int) {
         elementRepository.setLocalId(id)
+    }
+
+    fun send(event: ElementEvent) {
+        when (event) {
+            is SaveEvent -> setCache(event.id)
+
+            is LoadEvent -> getElement(event.id)
+        }
     }
 
     companion object {

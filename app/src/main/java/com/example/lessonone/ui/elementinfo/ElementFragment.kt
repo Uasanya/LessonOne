@@ -32,17 +32,17 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
         super.onCreate(savedInstanceState)
 
         val id = arguments?.getInt(ARG_PARAM1).apply {
-            this?.let { viewModel.setCache(this) }
+            this?.let { viewModel.send(SaveEvent(this)) }
         } ?: return
-        viewModel.getElement(id)
+        viewModel.send(LoadEvent(id))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.elementLiveData.observe(viewLifecycleOwner) { element ->
-            binding.tvId.text = element.id.toString()
-            binding.tvName.text = element.name
-            binding.tvDesc.text = element.description
+        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
+            binding.tvId.text = state.element.id.toString()
+            binding.tvName.text = state.element.name
+            binding.tvDesc.text = state.element.description
         }
     }
 
