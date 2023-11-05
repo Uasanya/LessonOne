@@ -1,7 +1,13 @@
 package com.example.lessonone.ui.elementinfo
 
-interface ElementEvent
+import com.example.lessonone.data.model.Element
 
-    class SaveEvent(val id : Int) : ElementEvent
+sealed interface ElementEvent
 
-    class LoadEvent(val id : Int) : ElementEvent
+class SaveElementEvent(val id: Int) : ElementEvent
+
+object SavedElementEvent : ElementEvent
+
+class LoadElementEvent(val id: Int) : ElementEvent
+
+class LoadedElementEvent(val element: Element) : ElementEvent

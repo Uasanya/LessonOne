@@ -23,7 +23,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
         val localDataSource = LocalDataSource(cache)
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
-        val factory = ListViewModel.provideFactory(repository, this)
+        val useCases = listOf(LoadListUseCase(repository))
+        val factory = ListViewModel.provideFactory(useCases, this)
         ViewModelProvider(this, factory)[ListViewModel::class.java]
     }
     private val listAdapter: ElementListAdapter by lazy {
@@ -34,8 +35,8 @@ class ListFragment : BaseFragment<FragmentListBinding>(FragmentListBinding::infl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.send(LoadEvent())
-        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
+        viewModel.getList()
+        viewModel.state.observe(viewLifecycleOwner) { state ->
             listAdapter.submitList(state.list)
         }
         binding.rv.adapter = listAdapter

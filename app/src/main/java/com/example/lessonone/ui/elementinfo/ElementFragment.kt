@@ -24,25 +24,27 @@ class ElementFragment : BaseFragment<FragmentElementBinding>(FragmentElementBind
         val localDataSource = LocalDataSource(cache)
         val elementDataSource = ElementDataSource()
         val repository = ElementRepository(elementDataSource, localDataSource)
-        val factory = ElementViewModel.provideFactory(repository, this)
+        val useCases = listOf(LoadElementUseCase(repository), SaveElementUseCase(repository))
+        val factory = ElementViewModel.provideFactory(useCases, this)
         ViewModelProvider(this, factory)[ElementViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val id = arguments?.getInt(ARG_PARAM1).apply {
-            this?.let { viewModel.send(SaveEvent(this)) }
+            this?.let { viewModel.setCache(this) }
         } ?: return
-        viewModel.send(LoadEvent(id))
+        viewModel.getElement(id)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
-            binding.tvId.text = state.element.id.toString()
-            binding.tvName.text = state.element.name
-            binding.tvDesc.text = state.element.description
+        viewModel.state.observe(viewLifecycleOwner) { state ->
+            state.element?.let {
+                binding.tvId.text = it.id.toString()
+                binding.tvName.text = it.name
+                binding.tvDesc.text = it.description
+            }
         }
     }
 

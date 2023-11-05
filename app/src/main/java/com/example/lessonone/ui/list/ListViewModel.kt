@@ -2,36 +2,28 @@ package com.example.lessonone.ui.list
 
 import android.os.Bundle
 import androidx.lifecycle.AbstractSavedStateViewModelFactory
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.example.lessonone.data.repository.ElementRepository
+import com.example.lessonone.base.BaseViewModel
+import com.example.lessonone.ui.base.UseCase
 
 class ListViewModel(
-    private val elementRepository: ElementRepository
-) : ViewModel() {
+    useCases: List<UseCase<ListState, ListEvent>>
+) : BaseViewModel<ListState, ListEvent>(
+    useCases = useCases,
+    reducer = ListReducer(),
+    initialState = ListState(emptyList())
+) {
 
-    private val _stateLiveData = MutableLiveData<ListState>()
-    val stateLiveData: LiveData<ListState>
-        get() = _stateLiveData
-
-    private fun getList() {
-        val list = elementRepository.getDataSourceList()
-        _stateLiveData.value = ListState(list)
-    }
-
-    fun send(event: ListEvent) {
-        when (event) {
-            is LoadEvent -> getList()
-        }
+    fun getList() {
+        sendEvent(LoadListEvent())
     }
 
     companion object {
 
         fun provideFactory(
-            elementRepository: ElementRepository,
+            useCases: List<UseCase<ListState, ListEvent>>,
             owner: SavedStateRegistryOwner,
             defaultArgs: Bundle? = null,
         ): AbstractSavedStateViewModelFactory =
@@ -42,7 +34,7 @@ class ListViewModel(
                     modelClass: Class<T>,
                     handle: SavedStateHandle
                 ): T {
-                    return ListViewModel(elementRepository) as T
+                    return ListViewModel(useCases) as T
                 }
             }
     }
